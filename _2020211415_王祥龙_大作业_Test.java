@@ -12,7 +12,8 @@ public class _2020211415_王祥龙_大作业_Test {
         for(int i = 0; i < 5; i++)
         {
             _2020211415_王祥龙_大作业_ProductSpecification productSpecification = new _2020211415_王祥龙_大作业_ProductSpecification(test_isbn[i], test_price[i], test_title[i], type[i]);
-            _2020211415_王祥龙_大作业_IPricingStrategy iPricingStrategy = _2020211415_王祥龙_大作业_PricingStrategyFactory.getInstance().getPricingStrategy(type[i]);
+            _2020211415_王祥龙_大作业_PricingStrategyFactory pricingStrategyFactory = _2020211415_王祥龙_大作业_PricingStrategyFactory.getInstance();
+            _2020211415_王祥龙_大作业_IPricingStrategy iPricingStrategy = pricingStrategyFactory.getPricingStrategy(type[i]);
             items.add(new _2020211415_王祥龙_大作业_SaleLineItem(test_copies[i], productSpecification, iPricingStrategy));
         }
         _2020211415_王祥龙_大作业_Sale sale = new _2020211415_王祥龙_大作业_Sale(items);

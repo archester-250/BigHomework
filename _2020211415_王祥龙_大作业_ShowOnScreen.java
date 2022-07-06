@@ -6,7 +6,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -38,10 +37,12 @@ public class _2020211415_王祥龙_大作业_ShowOnScreen {
         jMenuItem_add.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JDialog jDialog = new JDialog(jFrame, "添加至购物车");
+                MyJDialog_add jDialog = MyJDialog_add.getInstance_jDialog();
+                jDialog.setTitle("添加至购物车");
                 jDialog.setSize(dialogSize);
                 jDialog.setLocation(new Point((screenSize.width - dialogSize.width) / 2, (screenSize.height - dialogSize.height) / 2));
                 Container container_1 = jDialog.getContentPane();
+                container_1.removeAll();
                 container_1.setLayout(new BorderLayout());
                 Label title = new Label("添加至购物车", Label.CENTER);
                 title.setFont(new Font("微软雅黑", Font.CENTER_BASELINE, 20));
@@ -59,6 +60,7 @@ public class _2020211415_王祥龙_大作业_ShowOnScreen {
                     labels[i].setFont(new Font("微软雅黑", Font.CENTER_BASELINE, 15));
                     textFields[i].setFont(new Font("微软雅黑", Font.CENTER_BASELINE, 15));
                     textFields[i].setHorizontalAlignment(JTextField.CENTER);
+                    textFields[i].setText("");
                     jPanel.add(labels[i]);
                     jPanel.add(textFields[i]);
                 }
@@ -68,9 +70,6 @@ public class _2020211415_王祥龙_大作业_ShowOnScreen {
                 instruction.setFont(new Font("微软雅黑", Font.CENTER_BASELINE, 10));
                 container_1.add(instruction, BorderLayout.EAST);
                 jDialog.setVisible(true);
-
-
-
                 add.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
@@ -85,12 +84,11 @@ public class _2020211415_王祥龙_大作业_ShowOnScreen {
                             if(type == 0 && price < _2020211415_王祥龙_大作业_PricingStrategyFactory.getDiscountPerBook()) throw new PriceException();
                             if(type < 0 || type > 3) throw new NumberFormatException();
 
-                            JOptionPane.showMessageDialog(jDialog, "添加成功！", "Success", JOptionPane.OK_OPTION);
-                            jDialog.dispose();
+                            _2020211415_王祥龙_大作业_PricingStrategyFactory pricingStrategyFactory = _2020211415_王祥龙_大作业_PricingStrategyFactory.getInstance();
                             _2020211415_王祥龙_大作业_SaleLineItem item = new _2020211415_王祥龙_大作业_SaleLineItem(1,
                                     new _2020211415_王祥龙_大作业_ProductSpecification(textFields[0].getText(), price,
                                             textFields[2].getText(), type),
-                                    _2020211415_王祥龙_大作业_PricingStrategyFactory.getInstance().getPricingStrategy(type));
+                                    pricingStrategyFactory.getPricingStrategy(type));
                             items.add(item);
                             details.setLayout(new GridLayout(items.size(), 3, 0, 20));
 
@@ -124,6 +122,10 @@ public class _2020211415_王祥龙_大作业_ShowOnScreen {
                             details.add(bookDetail);
                             details.add(count);
                             details.add((JTextField)(copies.get(items.size() - 1)));
+                            container.add(jScrollPane, BorderLayout.CENTER);
+                            jFrame.setVisible(true);
+                            JOptionPane.showMessageDialog(jDialog, "添加成功！", "Success", JOptionPane.OK_OPTION);
+                            jDialog.dispose();
 
                         }catch (NumberFormatException nfe)
                         {
@@ -139,30 +141,32 @@ public class _2020211415_王祥龙_大作业_ShowOnScreen {
                 });
             }
         });
-        container.add(jScrollPane, BorderLayout.CENTER);
         jMenu_options.add(jMenuItem_add);
-
         JMenu jMenu_test = new JMenu("测试");
         JMenuItem jMenuItem_test = new JMenuItem("测试用例结果输出");
         jMenu_test.add(jMenuItem_test);
         jMenuItem_test.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JDialog testResult = new JDialog(jFrame, "测试结果");
+                MyJDialog_test testResult = MyJDialog_test.getInstance_jDialog();
+                testResult.setTitle("测试结果");
                 testResult.setSize(dialogSize);
                 testResult.setLocation(new Point((screenSize.width - dialogSize.width) / 2, (screenSize.height - dialogSize.height) / 2));
-                testResult.setLayout(new BorderLayout());
+                Container container1 = testResult.getContentPane();
+                container1.removeAll();
+                container1.setLayout(new BorderLayout());
                 JLabel jLabel = new JLabel("测试用例的总额为：" + _2020211415_王祥龙_大作业_Test.Test());
                 jLabel.setFont(new Font("微软雅黑", Font.CENTER_BASELINE, 20));
                 jLabel.setHorizontalAlignment(JLabel.CENTER);
-                testResult.add(jLabel, BorderLayout.CENTER);
+                container1.add(jLabel, BorderLayout.CENTER);
                 JButton jButton = new JButton("生成测试用例购物单");
-                testResult.add(jButton, BorderLayout.SOUTH);
+                container1.add(jButton, BorderLayout.SOUTH);
                 jButton.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         try {
                             log(items, "（测试）");
+                            testResult.dispose();
                         } catch (IOException ex) {
                             ex.printStackTrace();
                             JOptionPane.showMessageDialog(testResult, "IO异常！请联系管理员", "Error", JOptionPane.ERROR_MESSAGE);
@@ -179,12 +183,13 @@ public class _2020211415_王祥龙_大作业_ShowOnScreen {
         jMenuItem_modify.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JDialog modify = new JDialog(jFrame, "修改降价幅度");
+                MyJDialog_modify modify = MyJDialog_modify.getInstance_jDialog();
+                modify.setTitle("修改降价幅度");
                 modify.setSize(dialogSize);
                 modify.setLocation(new Point((screenSize.width - dialogSize.width) / 2, (screenSize.height - dialogSize.height) / 2));
                 Container container1 = modify.getContentPane();
+                container1.removeAll();
                 container1.setLayout(new BorderLayout());
-
                 JPanel jPanel = new JPanel(new GridLayout(2, 2));
                 JLabel label_1 = new JLabel("请选择要修改的类型：");
                 label_1.setFont(new Font("微软雅黑", Font.CENTER_BASELINE, 15));
@@ -193,6 +198,7 @@ public class _2020211415_王祥龙_大作业_ShowOnScreen {
                 jComboBox.addItem("教材类图书");
                 jComboBox.addItem("连环画类");
                 jComboBox.addItem("非教材类的计算机图书");
+                jComboBox.setSelectedIndex(0);
                 jPanel.add(label_1);
                 jPanel.add(jComboBox);
                 JLabel label_2 = new JLabel("<html>请输入修改后的数值<br>教材类图书：每本书的降价<br>连环画和非教材类的计算机图书：打折百分比</html>");
@@ -200,6 +206,7 @@ public class _2020211415_王祥龙_大作业_ShowOnScreen {
                 JTextField textField = new JTextField();
                 textField.setFont(new Font("微软雅黑", Font.CENTER_BASELINE, 15));
                 textField.setHorizontalAlignment(JTextField.CENTER);
+                textField.setText("");
                 jPanel.add(label_2);
                 jPanel.add(textField);
                 modify.setVisible(true);
@@ -239,8 +246,10 @@ public class _2020211415_王祥龙_大作业_ShowOnScreen {
                             {
                                 if(index - 1 == ((_2020211415_王祥龙_大作业_SaleLineItem)items.get(i)).getProdSpec().getType())
                                 {
+                                    _2020211415_王祥龙_大作业_PricingStrategyFactory pricingStrategyFactory =
+                                            _2020211415_王祥龙_大作业_PricingStrategyFactory.getInstance();
                                     ((_2020211415_王祥龙_大作业_SaleLineItem)items.get(i)).setStrategy(
-                                            _2020211415_王祥龙_大作业_PricingStrategyFactory.getInstance().getPricingStrategy(index - 1));
+                                            pricingStrategyFactory.getPricingStrategy(index - 1));
                                 }
                             }
                             JOptionPane.showMessageDialog(modify, "修改成功！", "Success", JOptionPane.OK_OPTION);
@@ -278,7 +287,9 @@ public class _2020211415_王祥龙_大作业_ShowOnScreen {
                     ((_2020211415_王祥龙_大作业_SaleLineItem)items.get(i)).setCopies(Integer.parseInt(((JTextField)copies.get(i)).getText()));
                 }
                 _2020211415_王祥龙_大作业_Sale sale = new _2020211415_王祥龙_大作业_Sale(items);
-                JDialog result = new JDialog(jFrame, "结算");
+                MyJDialog_result result = MyJDialog_result.getInstance_jDialog();
+                result.removeAll();
+                result.setTitle("结算");
                 result.setSize(dialogSize);
                 result.setLocation(new Point((screenSize.width - dialogSize.width) / 2, (screenSize.height - dialogSize.height) / 2));
                 Container container1 = result.getContentPane();
@@ -294,6 +305,7 @@ public class _2020211415_王祥龙_大作业_ShowOnScreen {
                     public void actionPerformed(ActionEvent e) {
                         try {
                             log(items, "");
+                            result.dispose();
                         } catch (IOException ex) {
                             ex.printStackTrace();
                             JOptionPane.showMessageDialog(result, "IO异常！请联系管理员", "Error", JOptionPane.ERROR_MESSAGE);
@@ -365,6 +377,42 @@ public class _2020211415_王祥龙_大作业_ShowOnScreen {
         JOptionPane.showMessageDialog(null, "成功生成购物清单！", "Success", JOptionPane.OK_OPTION);
     }
 
+}
+
+class MyJDialog_add extends JDialog{
+    private static MyJDialog_add instance_jDialog = new MyJDialog_add();
+    private MyJDialog_add()
+    {
+
+    }
+    public static synchronized MyJDialog_add getInstance_jDialog(){return instance_jDialog;}
+}
+
+class MyJDialog_test extends JDialog{
+    private static MyJDialog_test instance_jDialog = new MyJDialog_test();
+    private MyJDialog_test()
+    {
+
+    }
+    public static synchronized MyJDialog_test getInstance_jDialog(){return instance_jDialog;}
+}
+
+class MyJDialog_result extends JDialog{
+    private static MyJDialog_result instance_jDialog = new MyJDialog_result();
+    private MyJDialog_result()
+    {
+
+    }
+    public static synchronized MyJDialog_result getInstance_jDialog(){return instance_jDialog;}
+}
+
+class MyJDialog_modify extends JDialog{
+    private static MyJDialog_modify instance_jDialog = new MyJDialog_modify();
+    private MyJDialog_modify()
+    {
+
+    }
+    public static synchronized MyJDialog_modify getInstance_jDialog(){return instance_jDialog;}
 }
 
 class PriceException extends Exception{
