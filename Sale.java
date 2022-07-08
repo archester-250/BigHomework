@@ -1,9 +1,9 @@
 import java.util.ArrayList;
 
-public class _2020211415_王祥龙_大作业_Sale {
-    private ArrayList<_2020211415_王祥龙_大作业_SaleLineItem> items;
+public class Sale {
+    private ArrayList<SaleLineItem> items;
 
-    public _2020211415_王祥龙_大作业_Sale(ArrayList<_2020211415_王祥龙_大作业_SaleLineItem> items) {
+    public Sale(ArrayList<SaleLineItem> items) {
         this.items = items;
     }
 

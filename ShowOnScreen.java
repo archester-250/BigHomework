@@ -11,7 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class _2020211415_王祥龙_大作业_ShowOnScreen {
+public class ShowOnScreen {
     public static void main(String[] args) {
         Toolkit toolkit = Toolkit.getDefaultToolkit();
         Dimension screenSize = toolkit.getScreenSize();
@@ -28,7 +28,7 @@ public class _2020211415_王祥龙_大作业_ShowOnScreen {
         JButton submit = new JButton("提交订单");
         container.add(submit, BorderLayout.SOUTH);
 
-        ArrayList items = new ArrayList<_2020211415_王祥龙_大作业_SaleLineItem>(0);
+        ArrayList items = new ArrayList<SaleLineItem>(0);
         JMenu jMenu_options = new JMenu("选项");
         JMenuItem jMenuItem_add = new JMenuItem("添加书本至购物车...");
         JPanel details = new JPanel(new GridLayout(items.size(), 3, 0, 20));
@@ -78,25 +78,31 @@ public class _2020211415_王祥龙_大作业_ShowOnScreen {
                             {
                                 if(textFields[i].getText().isEmpty()) throw new NullPointerException();
                             }
+                            for (int i = 0; i < items.size(); i++)
+                            {
+                                if(textFields[0].getText().equals(((SaleLineItem)items.get(i)).getProdSpec().getIsbn()))
+                                    throw new ArrayStoreException();
+                            }
                             long ISBN = Long.parseLong(textFields[0].getText());
                             double price = Double.parseDouble(textFields[1].getText());
                             int type = Integer.parseInt(textFields[3].getText());
-                            if(type == 0 && price < _2020211415_王祥龙_大作业_PricingStrategyFactory.getDiscountPerBook()) throw new PriceException();
+                            if(type == 0 && price < PricingStrategyFactory.getDiscountPerBook())
+                                throw new PriceException();
                             if(type < 0 || type > 3) throw new NumberFormatException();
 
-                            _2020211415_王祥龙_大作业_PricingStrategyFactory pricingStrategyFactory = _2020211415_王祥龙_大作业_PricingStrategyFactory.getInstance();
-                            _2020211415_王祥龙_大作业_SaleLineItem item = new _2020211415_王祥龙_大作业_SaleLineItem(1,
-                                    new _2020211415_王祥龙_大作业_ProductSpecification(textFields[0].getText(), price,
+                            PricingStrategyFactory pricingStrategyFactory = PricingStrategyFactory.getInstance();
+                            SaleLineItem item = new SaleLineItem(1,
+                                    new ProductSpecification(textFields[0].getText(), price,
                                             textFields[2].getText(), type),
                                     pricingStrategyFactory.getPricingStrategy(type));
                             items.add(item);
                             details.setLayout(new GridLayout(items.size(), 3, 0, 20));
 
-                            String text = "<html>ISBN号：" + ((_2020211415_王祥龙_大作业_SaleLineItem)items.get(items.size() - 1)).getProdSpec().getIsbn()
-                                    + "<br>原价：" + ((_2020211415_王祥龙_大作业_SaleLineItem)items.get(items.size() - 1)).getProdSpec().getPrice()
-                                    + "<br>书名：" + ((_2020211415_王祥龙_大作业_SaleLineItem)items.get(items.size() - 1)).getProdSpec().getTitle()
+                            String text = "<html>ISBN号：" + ((SaleLineItem)items.get(items.size() - 1)).getProdSpec().getIsbn()
+                                    + "<br>原价：" + ((SaleLineItem)items.get(items.size() - 1)).getProdSpec().getPrice()
+                                    + "<br>书名：" + ((SaleLineItem)items.get(items.size() - 1)).getProdSpec().getTitle()
                                     + "<br>类型：";
-                            switch (((_2020211415_王祥龙_大作业_SaleLineItem)items.get(items.size() - 1)).getProdSpec().getType())
+                            switch (((SaleLineItem)items.get(items.size() - 1)).getProdSpec().getType())
                             {
                                 case 0:
                                     text += "教材类图书";
@@ -136,6 +142,9 @@ public class _2020211415_王祥龙_大作业_ShowOnScreen {
                         }catch (PriceException pe)
                         {
                             JOptionPane.showMessageDialog(jDialog, "定价小于折扣价！", "Error", JOptionPane.ERROR_MESSAGE);
+                        }catch (ArrayStoreException ase)
+                        {
+                            JOptionPane.showMessageDialog(jDialog, "ISBN号重复添加！", "Error", JOptionPane.ERROR_MESSAGE);
                         }
                     }
                 });
@@ -155,7 +164,7 @@ public class _2020211415_王祥龙_大作业_ShowOnScreen {
                 Container container1 = testResult.getContentPane();
                 container1.removeAll();
                 container1.setLayout(new BorderLayout());
-                JLabel jLabel = new JLabel("测试用例的总额为：" + _2020211415_王祥龙_大作业_Test.Test());
+                JLabel jLabel = new JLabel("测试用例的总额为：" + Test.Test());
                 jLabel.setFont(new Font("微软雅黑", Font.CENTER_BASELINE, 20));
                 jLabel.setHorizontalAlignment(JLabel.CENTER);
                 container1.add(jLabel, BorderLayout.CENTER);
@@ -209,12 +218,12 @@ public class _2020211415_王祥龙_大作业_ShowOnScreen {
                 textField.setText("");
                 jPanel.add(label_2);
                 jPanel.add(textField);
-                modify.setVisible(true);
 
                 container1.add(jPanel, BorderLayout.CENTER);
 
                 JButton confirm = new JButton("确认");
                 container1.add(confirm, BorderLayout.SOUTH);
+                modify.setVisible(true);
                 confirm.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
@@ -226,29 +235,29 @@ public class _2020211415_王祥龙_大作业_ShowOnScreen {
                                 case 1:
                                     for(int i = 0; i < items.size(); i++)
                                     {
-                                        if(Integer.parseInt(textField.getText()) > ((_2020211415_王祥龙_大作业_SaleLineItem)items.get(i)).getProdSpec().getPrice())
+                                        if(Integer.parseInt(textField.getText()) > ((SaleLineItem)items.get(i)).getProdSpec().getPrice())
                                             throw new PriceException();
                                     }
-                                    _2020211415_王祥龙_大作业_PricingStrategyFactory.setDiscountPerBook(Integer.parseInt(textField.getText()));
+                                    PricingStrategyFactory.setDiscountPerBook(Integer.parseInt(textField.getText()));
                                     break;
                                 case 2:
                                     if(Integer.parseInt(textField.getText()) < 0 || Integer.parseInt(textField.getText()) > 100) throw new PercentException();
-                                    _2020211415_王祥龙_大作业_PricingStrategyFactory.setDiscountPercentage_1(Integer.parseInt(textField.getText()));
+                                    PricingStrategyFactory.setDiscountPercentage_1(Integer.parseInt(textField.getText()));
                                     break;
                                 case 3:
                                     if(Integer.parseInt(textField.getText()) < 0 || Integer.parseInt(textField.getText()) > 100) throw new PercentException();
-                                    _2020211415_王祥龙_大作业_PricingStrategyFactory.setDiscountPercentage_2(Integer.parseInt(textField.getText()));
+                                    PricingStrategyFactory.setDiscountPercentage_2(Integer.parseInt(textField.getText()));
                                     break;
                                 default:
                                     throw new NullPointerException();
                             }
                             for(int i = 0; i < items.size(); i++)
                             {
-                                if(index - 1 == ((_2020211415_王祥龙_大作业_SaleLineItem)items.get(i)).getProdSpec().getType())
+                                if(index - 1 == ((SaleLineItem)items.get(i)).getProdSpec().getType())
                                 {
-                                    _2020211415_王祥龙_大作业_PricingStrategyFactory pricingStrategyFactory =
-                                            _2020211415_王祥龙_大作业_PricingStrategyFactory.getInstance();
-                                    ((_2020211415_王祥龙_大作业_SaleLineItem)items.get(i)).setStrategy(
+                                    PricingStrategyFactory pricingStrategyFactory =
+                                            PricingStrategyFactory.getInstance();
+                                    ((SaleLineItem)items.get(i)).setStrategy(
                                             pricingStrategyFactory.getPricingStrategy(index - 1));
                                 }
                             }
@@ -282,37 +291,43 @@ public class _2020211415_王祥龙_大作业_ShowOnScreen {
         submit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                for(int i = 0; i < items.size(); i++)
-                {
-                    ((_2020211415_王祥龙_大作业_SaleLineItem)items.get(i)).setCopies(Integer.parseInt(((JTextField)copies.get(i)).getText()));
-                }
-                _2020211415_王祥龙_大作业_Sale sale = new _2020211415_王祥龙_大作业_Sale(items);
-                MyJDialog_result result = MyJDialog_result.getInstance_jDialog();
-                result.removeAll();
-                result.setTitle("结算");
-                result.setSize(dialogSize);
-                result.setLocation(new Point((screenSize.width - dialogSize.width) / 2, (screenSize.height - dialogSize.height) / 2));
-                Container container1 = result.getContentPane();
-                container1.setLayout(new BorderLayout());
-                JLabel jLabel = new JLabel("您此次购物的金额为：" + sale.getTotal());
-                jLabel.setFont(new Font("微软雅黑", Font.CENTER_BASELINE, 20));
-                jLabel.setHorizontalAlignment(JLabel.CENTER);
-                container1.add(jLabel, BorderLayout.CENTER);
-                JButton jButton = new JButton("生成本次购物单");
-                container1.add(jButton, BorderLayout.SOUTH);
-                jButton.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        try {
-                            log(items, "");
-                            result.dispose();
-                        } catch (IOException ex) {
-                            ex.printStackTrace();
-                            JOptionPane.showMessageDialog(result, "IO异常！请联系管理员", "Error", JOptionPane.ERROR_MESSAGE);
-                        }
+                try {
+                    for(int i = 0; i < items.size(); i++)
+                    {
+                        if(Integer.parseInt(((JTextField)copies.get(i)).getText()) < 0) throw new NumberFormatException();
+                        ((SaleLineItem)items.get(i)).setCopies(Integer.parseInt(((JTextField)copies.get(i)).getText()));
                     }
-                });
-                result.setVisible(true);
+                    Sale sale = new Sale(items);
+                    MyJDialog_result result = MyJDialog_result.getInstance_jDialog();
+                    result.setTitle("结算");
+                    result.setSize(dialogSize);
+                    result.setLocation(new Point((screenSize.width - dialogSize.width) / 2, (screenSize.height - dialogSize.height) / 2));
+                    Container container1 = result.getContentPane();
+                    container1.removeAll();
+                    container1.setLayout(new BorderLayout());
+                    JLabel jLabel = new JLabel("您此次购物的金额为：" + sale.getTotal());
+                    jLabel.setFont(new Font("微软雅黑", Font.CENTER_BASELINE, 20));
+                    jLabel.setHorizontalAlignment(JLabel.CENTER);
+                    container1.add(jLabel, BorderLayout.CENTER);
+                    JButton jButton = new JButton("生成本次购物单");
+                    container1.add(jButton, BorderLayout.SOUTH);
+                    jButton.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            try {
+                                log(items, "");
+                                result.dispose();
+                            } catch (IOException ex) {
+                                ex.printStackTrace();
+                                JOptionPane.showMessageDialog(result, "IO异常！请联系管理员", "Error", JOptionPane.ERROR_MESSAGE);
+                            }
+                        }
+                    });
+                    result.setVisible(true);
+                }catch (NumberFormatException nfe)
+                {
+                    JOptionPane.showMessageDialog(jFrame, "输入类型错误！", "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
         container.add(submit, BorderLayout.SOUTH);
@@ -337,9 +352,9 @@ public class _2020211415_王祥龙_大作业_ShowOnScreen {
         {
             for(int i = 0; i < items.size(); i++)
             {
-                fw.write(((_2020211415_王祥龙_大作业_SaleLineItem)items.get(i)).getProdSpec().getTitle() + "\t\t\t"
-                        + ((_2020211415_王祥龙_大作业_SaleLineItem)items.get(i)).getCopies() + "\t\t\t" +
-                        ((_2020211415_王祥龙_大作业_SaleLineItem)items.get(i)).getProdSpec().getPrice() + "\n\n");
+                fw.write(((SaleLineItem)items.get(i)).getProdSpec().getTitle() + "\t\t\t"
+                        + ((SaleLineItem)items.get(i)).getCopies() + "\t\t\t" +
+                        ((SaleLineItem)items.get(i)).getProdSpec().getPrice() + "\n\n");
             }
         }
         else
@@ -358,12 +373,12 @@ public class _2020211415_王祥龙_大作业_ShowOnScreen {
 
         if(str.isEmpty())
         {
-            _2020211415_王祥龙_大作业_Sale sale = new _2020211415_王祥龙_大作业_Sale(items);
+            Sale sale = new Sale(items);
             fw.write(String.valueOf(sale.getTotal()));
         }
         else
         {
-            fw.write(String.valueOf(_2020211415_王祥龙_大作业_Test.Test()));
+            fw.write(String.valueOf(Test.Test()));
         }
 
         fw.write("\n\n**************************************欢迎再次光临电子书城！**************************************\n");
